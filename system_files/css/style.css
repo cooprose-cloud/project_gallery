@@ -1,0 +1,405 @@
+/* ============================================================
+   Photos at an Exposition — Navy & Gold Stylesheet
+   style.css
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap');
+
+:root {
+    --navy-dark:    #0a1628;
+    --navy:         #132244;
+    --navy-mid:     #1e3a6e;
+    --navy-light:   #2a5298;
+    --gold:         #c9a84c;
+    --gold-bright:  #f0c040;
+    --gold-pale:    #f5e6b8;
+    --cream:        #fdf8ee;
+    --white:        #ffffff;
+    --text-dark:    #1a1a2e;
+    --text-mid:     #3a3a5c;
+    --text-light:   #8899bb;
+    --border-gold:  rgba(201, 168, 76, 0.35);
+    --shadow-navy:  rgba(10, 22, 40, 0.45);
+}
+
+/* ── Reset ─────────────────────────────────────────────────── */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ── Base ───────────────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    background-color: var(--cream);
+    color: var(--text-dark);
+    line-height: 1.7;
+}
+
+a {
+    color: var(--navy-mid);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover { color: var(--gold); }
+
+/* ── Container ──────────────────────────────────────────────── */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px;
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+header {
+    background: linear-gradient(160deg, var(--navy-dark) 0%, var(--navy) 60%, var(--navy-mid) 100%);
+    color: var(--white);
+    text-align: center;
+    padding: 56px 24px 48px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Decorative gold rule above and below header text */
+header::before,
+header::after {
+    content: '';
+    display: block;
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto;
+}
+
+header::before { margin-bottom: 28px; }
+header::after  { margin-top:    28px; }
+
+header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.9em, 4vw, 3em);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--gold-bright);
+    text-shadow: 0 2px 12px var(--shadow-navy);
+    margin-bottom: 10px;
+}
+
+header h2 {
+    font-family: 'Lato', sans-serif;
+    font-size: clamp(0.95em, 2vw, 1.2em);
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-pale);
+    opacity: 0.88;
+}
+
+/* ── Overview Box ───────────────────────────────────────────── */
+.overview-box {
+    background: var(--white);
+    border-left: 4px solid var(--gold);
+    border-radius: 0 6px 6px 0;
+    padding: 28px 32px;
+    margin: 40px 0;
+    box-shadow: 0 2px 16px rgba(10,22,40,0.07);
+}
+
+.overview-box p {
+    font-size: 1.05em;
+    line-height: 1.85;
+    color: var(--text-mid);
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+}
+
+/* ── Slideshow ──────────────────────────────────────────────── */
+.slideshow-wrapper {
+    margin: 40px auto;
+}
+
+.slideshow-container {
+    max-width: 960px;
+    height: 580px;
+    margin: 0 auto;
+    position: relative;
+    background: var(--navy-dark);
+    border: 2px solid var(--border-gold);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px var(--shadow-navy);
+}
+
+.slideshow-slide {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    animation: fadeSlide 1.2s ease;
+}
+
+.slideshow-slide.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slideshow-slide img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+.slide-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(10,22,40,0.88));
+    color: var(--gold-pale);
+    padding: 24px 20px 16px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1em;
+    text-align: center;
+    letter-spacing: 0.04em;
+}
+
+@keyframes fadeSlide {
+    from { opacity: 0; transform: scale(1.02); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── Gallery Navigation Buttons ────────────────────────────── */
+.gallery-nav {
+    margin: 40px 0 20px;
+    text-align: center;
+}
+
+.gallery-nav h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5em;
+    color: var(--navy);
+    margin-bottom: 24px;
+    letter-spacing: 0.04em;
+}
+
+.gallery-nav h3::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 2px;
+    background: var(--gold);
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+.gallery-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.gallery-button {
+    flex: 1 1 160px;
+    padding: 14px 20px;
+    background: var(--navy);
+    color: var(--gold-pale);
+    border: 1px solid var(--border-gold);
+    border-radius: 4px;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.95em;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-align: center;
+    transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease,
+                transform 0.2s ease, box-shadow 0.25s ease;
+    box-shadow: 0 2px 8px rgba(10,22,40,0.18);
+}
+
+.gallery-button:hover {
+    background: var(--gold);
+    color: var(--navy-dark);
+    border-color: var(--gold);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(201,168,76,0.30);
+}
+
+/* ── Gallery Thumbnail Grid ─────────────────────────────────── */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 22px;
+    margin: 40px 0;
+}
+
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    border: 1px solid var(--border-gold);
+    box-shadow: 0 3px 12px rgba(10,22,40,0.12);
+    transition: transform 0.28s ease, box-shadow 0.28s ease;
+    background: var(--navy-dark);
+}
+
+.gallery-item:hover {
+    transform: translateY(-4px) scale(1.015);
+    box-shadow: 0 10px 30px rgba(10,22,40,0.22), 0 0 0 1px var(--gold);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.3s ease;
+    border: 4px solid gold;
+}
+
+.gallery-item:hover img { opacity: 0.92; }
+
+.gallery-item .thumb-caption {
+    background: var(--navy);
+    color: var(--gold-pale);
+    font-family: 'Lato', sans-serif;
+    font-size: 0.82em;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    padding: 8px 12px;
+    text-align: center;
+}
+
+/* ── Photo Viewer (individual photo page) ───────────────────── */
+.photo-viewer {
+    max-width: 1200px;
+    margin: 40px auto;
+    text-align: center;
+}
+
+.photo-main {
+    background: var(--navy-dark);
+    border: 1px solid var(--border-gold);
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 28px;
+    box-shadow: 0 6px 30px var(--shadow-navy);
+}
+
+.photo-main img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 3px;
+}
+
+.photo-caption {
+    background: var(--white);
+    border-left: 4px solid var(--gold);
+    border-radius: 0 4px 4px 0;
+    padding: 18px 24px;
+    margin-bottom: 24px;
+    text-align: left;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--text-mid);
+    font-size: 1em;
+    line-height: 1.7;
+}
+
+/* ── Navigation Links (back / prev / next) ──────────────────── */
+.photo-nav {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin: 28px 0;
+    flex-wrap: wrap;
+}
+
+.photo-nav a,
+.back-link {
+    display: inline-block;
+    padding: 11px 26px;
+    background: var(--navy);
+    color: var(--gold-pale);
+    border: 1px solid var(--border-gold);
+    border-radius: 4px;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.9em;
+    letter-spacing: 0.06em;
+    transition: background 0.22s ease, color 0.22s ease, border-color 0.22s ease;
+}
+
+.photo-nav a:hover,
+.back-link:hover {
+    background: var(--gold);
+    color: var(--navy-dark);
+    border-color: var(--gold);
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 24px;
+}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+footer {
+    background: linear-gradient(160deg, var(--navy-dark), var(--navy));
+    color: var(--gold-pale);
+    text-align: center;
+    padding: 40px 24px;
+    margin-top: 60px;
+    border-top: 1px solid var(--border-gold);
+}
+
+footer p {
+    margin: 4px 0;
+    font-size: 0.88em;
+    letter-spacing: 0.06em;
+    opacity: 0.85;
+}
+
+footer p strong {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1em;
+    color: var(--gold-bright);
+    font-weight: 400;
+    opacity: 1;
+    letter-spacing: 0.08em;
+}
+
+/* ── Utility: section divider ───────────────────────────────── */
+.gold-rule {
+    border: none;
+    border-top: 1px solid var(--border-gold);
+    margin: 36px 0;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    header { padding: 40px 16px 36px; }
+
+    .slideshow-container { height: 340px; }
+
+    .gallery-buttons { flex-direction: column; align-items: stretch; }
+
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 14px;
+    }
+
+    .gallery-item img { height: 160px; }
+
+    .photo-nav { flex-direction: column; align-items: center; }
+}

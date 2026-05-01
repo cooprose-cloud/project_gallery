@@ -1,0 +1,243 @@
+{
+  "site_info": {
+    "title": "Photographs by J. Cooper Rose",
+    "subtitle": "A Photographic Journey",
+    "photographer_name": "J. Cooper Rose",
+    "overview": "Welcome to my photographic collection.",
+    "date_published": "April 2026",
+    "copyright_year": "2026"
+  },
+  "output_directory": "/users/jamesrose/project_gallery/website",
+  "support_files_directory": "/users/jamesrose/project_gallery/user_files/support_files",
+  "thumbnail_size": [
+    300,
+    300
+  ],
+  "slideshow_config": {
+    "interval_seconds": 5,
+    "show_captions": true
+  },
+  "galleries": [
+    {
+      "id": "gardens",
+      "name": "Gardens",
+      "description": "Photos from Gardens",
+      "source_directory": "/users/jamesrose/project_gallery/user_files/Gardens",
+      "photos": [
+        "Berries.jpg",
+        "Black_Butterfly.jpg",
+        "Blackeyed_Susans_1.jpg",
+        "Blackeyed_Susans_2.jpg",
+        "Blue_Iris.jpg",
+        "Bough_of_Pine.jpg",
+        "Butterfly.jpg",
+        "Cherry_Blooms_Pink.jpg",
+        "Dogwoods.jpg",
+        "Dragonfly.jpg",
+        "Fall_Monet_Bridge.jpg",
+        "Fluffy_Grass.jpg",
+        "Flying_Dogwood.jpg",
+        "Garden_Ornament.jpg",
+        "Garden_Pride.jpg",
+        "Gardens_Fountain.jpg",
+        "Gibbs_Bench.jpg",
+        "Gibbs_Path.jpg",
+        "Golden_Girl.jpg",
+        "Golden_Girl2.jpg",
+        "Holly_Seeds.jpg",
+        "Hollyberries.jpg",
+        "Home_Sweet_Home.jpg",
+        "LVE_Autumn_from_Pond.jpg",
+        "LVE_Bridge.jpg",
+        "LVE_Gardens_Fountain2.jpg",
+        "LVE_Waterfalls.jpg",
+        "LVE_Waterfalls_2.jpg",
+        "Leaves.jpg",
+        "Rain_on_the_Lily_Pond.jpg",
+        "Refections.jpg",
+        "Vine.jpg"
+      ]
+    },
+    {
+      "id": "heirlooms",
+      "name": "Heirlooms",
+      "description": "Photos from Heirlooms",
+      "source_directory": "/users/jamesrose/project_gallery/user_files/Heirlooms",
+      "photos": [
+        "Bastet.jpg",
+        "Copper_Ant_Hole.jpg",
+        "Gift.jpg",
+        "Lace_Iron.jpg",
+        "Viewing_Rock.jpg",
+        "Whistler.jpg"
+      ]
+    },
+    {
+      "id": "kings_mountain",
+      "name": "Kings Mountain",
+      "description": "Photos from Kings Mountain",
+      "source_directory": "/users/jamesrose/project_gallery/user_files/Kings_Mountain",
+      "photos": [
+        "Blacksmith.jpg",
+        "Cat_and_Barn_Door.jpg",
+        "Cotton_Field.jpg",
+        "Dyer.jpeg",
+        "Dyer.jpg",
+        "Old_Barn.jpg",
+        "Rangers_Office.jpg"
+      ]
+    },
+    {
+      "id": "miscellaneous",
+      "name": "Miscellaneous",
+      "description": "Photos from Miscellaneous",
+      "source_directory": "/users/jamesrose/project_gallery/user_files/Miscellaneous",
+      "photos": [
+        "1929_Essex.jpg",
+        "Hillside-2.jpg",
+        "Hillside-3.jpg",
+        "I_think.jpg",
+        "Pogo.jpg",
+        "RFW_Horse_and_Rider.jpg",
+        "RFW_Pitcher.jpg",
+        "Steam_Show.jpg"
+      ]
+    },
+    {
+      "id": "people",
+      "name": "People",
+      "description": "Photos from People",
+      "source_directory": "/users/jamesrose/project_gallery/user_files/People",
+      "photos": [
+        "Ancestor_and_Descendants.jpg",
+        "Bob_Westervelt_1.jpg",
+        "Bob_Westervelt_2.jpg",
+        "Collecting_Cattails.jpg",
+        "Coop_and_Jo_China.jpg",
+        "David_Cox.jpg",
+        "Doug_in_Vermont.jpg",
+        "Einstein_and_Me.jpg",
+        "Ian01.jpg",
+        "Ian4.jpg",
+        "Ian_3 copy.jpg",
+        "Ian_3.jpg",
+        "Ian_and_Bev.jpg",
+        "Ian_and_Coop.jpg",
+        "Janet.jpg",
+        "Jo_and_Coop_Seattle.jpg",
+        "Kathy_and_Tuck.jpg",
+        "Self_Portrait.jpg",
+        "Square_Dancers.jpg",
+        "Stanley.jpg",
+        "The_Kids.jpg",
+        "Three_Guys.jpg",
+        "Tracy.jpg",
+        "Tracy_and_Coop.jpg",
+        "Tracy_and_Jo.jpg",
+        "Walt_and_Nina.jpg"
+      ]
+    },
+    {
+      "id": "pets",
+      "name": "Pets",
+      "description": "Photos from Pets",
+      "source_directory": "/users/jamesrose/project_gallery/user_files/Pets",
+      "photos": [
+        "01Koko_and_the_Game.jpg",
+        "02Koko-Puff.jpg",
+        "03Moxie.jpg",
+        "04Neko.jpg",
+        "05Sam_and_Jo.jpg",
+        "06Shinyuu.jpg",
+        "07Shinyuu2.jpg"
+      ],
+      "notes": {
+        "01Neko.jpg": "Neko",
+        "02Koko_and_the_Game.jpg": "Koko and the game",
+        "03Koko_Puff.jpg": "Koko Puff",
+        "04Moxie.jpg": "Moxie",
+        "05Sam_and_Jo.jpg": "Sam and Jo",
+        "06Shinyuu.jpg": "Coming Home for the first time.",
+        "07Shinyuu2.jpg": "He has grown up."
+      }
+    },
+    {
+      "id": "travel",
+      "name": "Travel",
+      "description": "Photos from Travel",
+      "source_directory": "/users/jamesrose/project_gallery/user_files/Travel",
+      "photos": [
+        "4_Horseshoe_Lane.png",
+        "Anna_Ruby_Falls.jpg",
+        "Anna_Ruby_Stream.jpg",
+        "Bazaar.jpg",
+        "Bergen.jpg",
+        "Chinese_Garden.jpg",
+        "Christ_Black_and_White.jpg",
+        "Christ_Colored.jpg",
+        "Civility.jpg",
+        "Copper_River.jpg",
+        "Current_Agora.jpg",
+        "Erosion.jpg",
+        "Guilin_River.jpg",
+        "Hillside.jpg",
+        "Hillside2.jpg",
+        "Hillside_3.jpg",
+        "Hummingbird.jpg",
+        "Iceland.jpg",
+        "Iceland_Shore.jpg",
+        "Japanese_Bowl.jpg",
+        "Lighthouse.jpg",
+        "Little_waterfalls.jpeg",
+        "Mt_Fuji.jpg",
+        "Multnomah_Falls.jpeg",
+        "Norway.jpg",
+        "Painted_Cow_and_Jo.jpg",
+        "Peruian_Door.jpg",
+        "Peruian_Robot.jpg",
+        "Portland_Lighthouse.jpg",
+        "Quan_Yin.jpg",
+        "Quan_Yin2.jpg",
+        "Rest_and_Be_Thankful.jpg",
+        "Room_with_a_View.jpg",
+        "Schooner.JPG",
+        "The_Agora.jpg",
+        "Tocola_Falls.jpg",
+        "Totem_Bear.jpg",
+        "UGA_Flower.jpg",
+        "Vermont_Road_1.jpg",
+        "Vermont_Road_2.jpg"
+      ]
+    }
+  ],
+  "slideshow_photos": [
+    {
+      "gallery_id": "gardens",
+      "photo_file": "Berries.jpg"
+    },
+    {
+      "gallery_id": "heirlooms",
+      "photo_file": "Bastet.jpg"
+    },
+    {
+      "gallery_id": "kings_mountain",
+      "photo_file": "Blacksmith.jpg"
+    },
+    {
+      "gallery_id": "miscellaneous",
+      "photo_file": "1929_Essex.jpg"
+    },
+    {
+      "gallery_id": "people",
+      "photo_file": "Ancestor_and_Descendants.jpg"
+    },
+    {
+      "gallery_id": "pets",
+      "photo_file": "01Koko_and_the_Game.jpg"
+    },
+    {
+      "gallery_id": "travel",
+      "photo_file": "4_Horseshoe_Lane.png"
+    }
+  ]
+}
