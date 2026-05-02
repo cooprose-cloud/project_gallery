@@ -272,6 +272,7 @@ header h2 {
     transition: all 0.3s ease;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     text-align: center;
+    border: 2px solid #FFD700;
 }
 
 .gallery-button:hover {
@@ -290,21 +291,33 @@ header h2 {
 
 .gallery-item {
     position: relative;
-    overflow: hidden;
     border-radius: 8px;
     box-shadow: 0 3px 10px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
+    border: 3px solid #FFD700;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
 }
 
 .gallery-item:hover {
     transform: scale(1.03);
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 20px rgba(255,215,0,0.4);
 }
 
 .gallery-item img {
     width: 100%;
     height: auto;
     display: block;
+}
+
+.gallery-item-caption {
+    padding: 8px 10px;
+    font-size: 0.9em;
+    color: #000;
+    text-align: center;
+    background: #fff;
+    min-height: 32px;
 }
 
 /* Photo Page */
@@ -356,7 +369,7 @@ header h2 {
 /* Footer */
 footer {
     background-color: var(--primary-color);
-    color: white;
+    color: #FFD700;
     text-align: center;
     padding: 30px 20px;
     margin-top: 60px;
@@ -597,12 +610,15 @@ document.addEventListener('DOMContentLoaded', function() {{
         """Generate thumbnail grid for a gallery."""
         items = []
         gallery_id = gallery['id']
-        
+        notes = gallery.get('notes', {})
+
         for i, photo_file in enumerate(gallery['photos']):
+            caption = notes.get(photo_file, '')
             items.append(f'            <a href="{gallery_id}_{i}.html" class="gallery-item">')
             items.append(f'                <img src="thumbnails/{gallery_id}/{photo_file}" alt="{photo_file}">')
+            items.append(f'                <div class="gallery-item-caption">{caption}</div>')
             items.append(f'            </a>')
-        
+
         return '\n'.join(items)
     
     def _generate_photo_pages(self):
