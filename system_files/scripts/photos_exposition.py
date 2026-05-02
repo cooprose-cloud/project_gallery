@@ -197,6 +197,7 @@ header h2 {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    border: 4px solid #222;
 }
 
 .slideshow-slide {
@@ -212,6 +213,8 @@ header h2 {
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-top: 20px;
+    padding-bottom: 60px;
 }
 
 .slideshow-slide img {
@@ -221,6 +224,9 @@ header h2 {
     height: auto;
     object-fit: contain;
     display: block;
+    border: 4px solid #FFD700;
+    border-radius: 4px;
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.45);
 }
 
 .slide-caption {
