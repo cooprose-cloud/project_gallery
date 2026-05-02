@@ -22,7 +22,7 @@
       "id": "heirlooms",
       "name": "Heirlooms",
       "description": "Photos from Heirlooms",
-      "source_directory": "/users/jamesrose/project_gallery/user_files/Heirlooms",
+      "source_directory": "/users/jamesrose/project_gallery/user_files/heirlooms",
       "photos": [
         "Bastet.jpg",
         "Copper_Ant_Hole.jpg",
@@ -36,7 +36,7 @@
       "id": "kings_mountain",
       "name": "Kings Mountain",
       "description": "Photos from Kings Mountain",
-      "source_directory": "/users/jamesrose/project_gallery/user_files/Kings_Mountain",
+      "source_directory": "/users/jamesrose/project_gallery/user_files/kings_mountain",
       "photos": [
         "Blacksmith.jpg",
         "Cat_and_Barn_Door.jpg",
@@ -51,7 +51,7 @@
       "id": "miscellaneous",
       "name": "Miscellaneous",
       "description": "Photos from Miscellaneous",
-      "source_directory": "/users/jamesrose/project_gallery/user_files/Miscellaneous",
+      "source_directory": "/users/jamesrose/project_gallery/user_files/miscellaneous",
       "photos": [
         "1929_Essex.jpg",
         "Hillside-2.jpg",
@@ -67,15 +67,15 @@
   "slideshow_photos": [
     {
       "gallery_id": "heirlooms",
-      "photo_file": "Gift.jpg"
+      "photo_file": "Bastet.jpg"
     },
     {
       "gallery_id": "kings_mountain",
-      "photo_file": "Rangers_Office.jpg"
+      "photo_file": "Blacksmith.jpg"
     },
     {
       "gallery_id": "miscellaneous",
-      "photo_file": "1929_Essex.jpg"
+      "photo_file": "Steam_Show.jpg"
     }
   ]
 }

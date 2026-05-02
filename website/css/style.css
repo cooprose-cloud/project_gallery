@@ -96,8 +96,6 @@ header h2 {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-top: 20px;
-    padding-bottom: 60px;
 }
 
 .slideshow-slide img {
@@ -107,9 +105,6 @@ header h2 {
     height: auto;
     object-fit: contain;
     display: block;
-    border: 4px solid #FFD700;
-    border-radius: 4px;
-    box-shadow: 0 0 18px rgba(255, 215, 0, 0.45);
 }
 
 .slide-caption {
@@ -161,6 +156,7 @@ header h2 {
     transition: all 0.3s ease;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     text-align: center;
+    border: 2px solid #FFD700;
 }
 
 .gallery-button:hover {
@@ -179,21 +175,33 @@ header h2 {
 
 .gallery-item {
     position: relative;
-    overflow: hidden;
     border-radius: 8px;
     box-shadow: 0 3px 10px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
+    border: 3px solid #FFD700;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
 }
 
 .gallery-item:hover {
     transform: scale(1.03);
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 20px rgba(255,215,0,0.4);
 }
 
 .gallery-item img {
     width: 100%;
     height: auto;
     display: block;
+}
+
+.gallery-item-caption {
+    padding: 8px 10px;
+    font-size: 0.9em;
+    color: #000;
+    text-align: center;
+    background: #fff;
+    min-height: 32px;
 }
 
 /* Photo Page */
@@ -245,7 +253,7 @@ header h2 {
 /* Footer */
 footer {
     background-color: var(--primary-color);
-    color: white;
+    color: #FFD700;
     text-align: center;
     padding: 30px 20px;
     margin-top: 60px;
