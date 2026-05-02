@@ -136,7 +136,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     color: var(--text-color);
-    background-color: #e0e0e0;
+    background-color: #b0b0b0;
 }
 
 .container {
@@ -334,6 +334,7 @@ header h2 {
 }
 
 .photo-main {
+    background: #000;
     padding: 10px;
     margin-bottom: 20px;
 }
@@ -677,7 +678,7 @@ document.addEventListener('DOMContentLoaded', function() {{
         <p>&copy; {self.config['site_info']['copyright_year']} {self.config['site_info']['photographer_name']}. All rights reserved.</p>
     </footer>
     <script>
-        window.scrollTo({{top: 0, behavior: 'smooth'}});
+        document.getElementById('photo').scrollIntoView({{behavior: 'smooth', block: 'start'}});
     </script>
 </body>
 </html>

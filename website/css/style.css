@@ -20,7 +20,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     color: var(--text-color);
-    background-color: #fff;
+    background-color: #b0b0b0;
 }
 
 .container {
@@ -243,16 +243,17 @@ header h2 {
     margin: 30px 0;
 }
 
-.photo-nav a, .back-link {
+.photo-nav a {
     padding: 12px 25px;
     background-color: var(--accent-color);
     color: white;
     text-decoration: none;
     border-radius: 4px;
     transition: background-color 0.3s ease;
+    border: 2px solid #FFD700;
 }
 
-.photo-nav a:hover, .back-link:hover {
+.photo-nav a:hover {
     background-color: var(--primary-color);
 }
 
