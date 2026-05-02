@@ -136,7 +136,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     color: var(--text-color);
-    background-color: #fff;
+    background-color: #e0e0e0;
 }
 
 .container {
@@ -334,7 +334,6 @@ header h2 {
 }
 
 .photo-main {
-    background: #000;
     padding: 10px;
     margin-bottom: 20px;
 }
@@ -359,16 +358,17 @@ header h2 {
     margin: 30px 0;
 }
 
-.photo-nav a, .back-link {
+.photo-nav a {
     padding: 12px 25px;
     background-color: var(--accent-color);
     color: white;
     text-decoration: none;
     border-radius: 4px;
     transition: background-color 0.3s ease;
+    border: 2px solid #FFD700;
 }
 
-.photo-nav a:hover, .back-link:hover {
+.photo-nav a:hover {
     background-color: var(--primary-color);
 }
 
@@ -659,8 +659,6 @@ document.addEventListener('DOMContentLoaded', function() {{
     </header>
 
     <div class="container">
-        <a href="{gallery_id}.html" class="back-link">← Back to Gallery</a>
-
         <div class="photo-viewer">
             <div class="photo-main" id="photo">
                 <img src="photos/{gallery_id}/{photo_file}" alt="{photo_file}">
@@ -679,7 +677,7 @@ document.addEventListener('DOMContentLoaded', function() {{
         <p>&copy; {self.config['site_info']['copyright_year']} {self.config['site_info']['photographer_name']}. All rights reserved.</p>
     </footer>
     <script>
-        document.getElementById('photo').scrollIntoView({{behavior: 'smooth', block: 'start'}});
+        window.scrollTo({{top: 0, behavior: 'smooth'}});
     </script>
 </body>
 </html>
