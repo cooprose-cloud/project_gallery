@@ -70,7 +70,11 @@
         "Lace_Iron.jpg",
         "Viewing_Rock.jpg",
         "Whistler.jpg"
-      ]
+      ],
+      "notes": {
+    "Bastet.jpg": "Egyptian cat goddess",
+    "Gift.jpg": "A treasured family gift"
+}
     },
     {
       "id": "kings_mountain",
