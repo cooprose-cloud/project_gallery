@@ -9,6 +9,7 @@ Generates a three-layer website structure:
 
 import os
 import json
+import sys
 import shutil
 from pathlib import Path
 from typing import Dict, List, Any
@@ -120,7 +121,7 @@ class PhotoExpositionGenerator:
 :root {
     --primary-color: #2c3e50;
     --secondary-color: #34495e;
-    --accent-color: #3498db;
+    --accent-color: #1a5a8a;
     --text-color: #333;
     --light-bg: #ecf0f1;
     --border-color: #bdc3c7;
@@ -170,17 +171,38 @@ header h2 {
 /* Overview Box */
 .overview-box {
     background-color: var(--light-bg);
-    border-left: 4px solid var(--accent-color);
-    padding: 30px;
+    border: 3px solid #1a2a4a;
+    padding: 20px 30px;
     margin: 40px 0;
     border-radius: 4px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
 .overview-box p {
     font-size: 1.1em;
     line-height: 1.8;
     color: var(--secondary-color);
+    flex: 1;
+    margin: 0;
+}
+
+.overview-box .overview-home-btn {
+    flex-shrink: 0;
+    padding: 10px 18px;
+    background-color: #1a5a8a;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.9em;
+    border: 2px solid #FFD700;
+    white-space: nowrap;
+}
+
+.overview-box .overview-home-btn:hover {
+    background-color: #1a2a4a;
 }
 
 /* Slideshow Styles */
@@ -350,6 +372,19 @@ header h2 {
     border-radius: 4px;
     box-shadow: 0 0 18px rgba(255, 215, 0, 0.45);
     object-fit: contain;
+}
+
+.photo-caption {
+    text-align: center;
+    color: #ffffff;
+    font-size: 1em;
+    font-style: italic;
+    margin: 12px auto 0;
+    max-width: 800px;
+    padding: 14px 24px;
+    background-color: #1a2a4a;
+    border: 2px solid #c8a84b;
+    border-radius: 5px;
 }
 
 .photo-nav {
@@ -593,12 +628,14 @@ document.addEventListener('DOMContentLoaded', function() {{
     </header>
     
     <div class="container">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        
-        {f'<div class="overview-box"><p>{description}</p></div>' if description else ''}
+        {f'<div class="overview-box"><p>{description}</p><a href="index.html" class="overview-home-btn">← Back to Home</a></div>' if description else ''}
         
         <div class="gallery-grid">
 {self._generate_gallery_thumbnails(gallery)}
+        </div>
+
+        <div style="text-align: center; margin: 40px 0 20px;">
+            <a href="index.html" class="gallery-button">← Back to Home</a>
         </div>
     </div>
     
@@ -640,10 +677,13 @@ document.addEventListener('DOMContentLoaded', function() {{
         gallery_id = gallery['id']
         gallery_name = gallery['name']
         photos = gallery['photos']
-        
+        notes = gallery.get('notes', {})
+
         for i, photo_file in enumerate(photos):
             prev_index = i - 1 if i > 0 else len(photos) - 1
             next_index = i + 1 if i < len(photos) - 1 else 0
+            caption = notes.get(photo_file, '')
+            caption_html = f'<div class="photo-caption">{caption}</div>' if caption else ''
             
             html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -661,13 +701,19 @@ document.addEventListener('DOMContentLoaded', function() {{
 
     <div class="container">
         <div class="photo-viewer">
+            <div style="text-align: center; margin: 10px 0 20px;">
+                <a href="index.html" class="gallery-button">← Back to Home</a>
+            </div>
+
             <div class="photo-main" id="photo">
                 <img src="photos/{gallery_id}/{photo_file}" alt="{photo_file}">
             </div>
+            {caption_html}
 
             <div class="photo-nav">
                 <a href="{gallery_id}_{prev_index}.html">← Previous</a>
                 <a href="{gallery_id}.html">Gallery Index</a>
+                <a href="index.html">Back to Home</a>
                 <a href="{gallery_id}_{next_index}.html">Next →</a>
             </div>
         </div>
@@ -692,10 +738,20 @@ document.addEventListener('DOMContentLoaded', function() {{
 
 def main():
     parser = argparse.ArgumentParser(description='Photos at an Exposition - Website Generator')
-    parser.add_argument('config', help='Path to configuration JSON file')
+    parser.add_argument(
+        'config',
+        help='Path to photo_config.json, or path to your user_files folder'
+    )
     args = parser.parse_args()
-    
-    generator = PhotoExpositionGenerator(args.config)
+
+    config_path = Path(args.config)
+    if config_path.is_dir():
+        config_path = config_path / 'photo_config.json'
+    if not config_path.exists():
+        print(f"ERROR: Config file not found: {config_path}")
+        sys.exit(1)
+
+    generator = PhotoExpositionGenerator(str(config_path))
     generator.generate_website()
 
 

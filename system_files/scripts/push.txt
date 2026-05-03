@@ -1,0 +1,3 @@
+git add .
+git commit -m "Back to Home button at bottom of gallery index pages"
+git push origin main

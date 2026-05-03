@@ -247,6 +247,106 @@ def write_config(config: Dict[str, Any], output_file: str):
         json.dump(config, f, indent=2)
 
 
+# ── Form-file mode ─────────────────────────────────────────────────────
+
+def generate_form(user_dir: Path):
+    """
+    Scan user_dir for gallery folders and write a pre-filled photo_config.json
+    directly into user_dir.  Every photo in every gallery gets a blank notes
+    entry ("") ready for the user to fill in.  Site-info fields are pre-filled
+    with sensible defaults — the user edits them directly in the JSON file.
+    """
+    SKIP_DIRS = {'support_files', 'slideshow', 'css', 'js', '__pycache__'}
+
+    print(f"\n  Scanning: {user_dir}")
+
+    candidates = sorted(
+        d for d in user_dir.iterdir()
+        if d.is_dir() and d.name.lower() not in {s.lower() for s in SKIP_DIRS}
+        and not d.name.startswith('.')
+    )
+
+    galleries = []
+    slideshow_photos = []
+
+    for d in candidates:
+        photos = get_image_files(d)
+        if not photos:
+            print(f"  Skipping '{d.name}' — no images found.")
+            continue
+
+        gid  = d.name.lower().replace(' ', '_')
+        name = d.name.replace('_', ' ').title()
+        desc = f"Photos from {name}"
+
+        # Every photo gets a blank note entry
+        notes = {photo: "" for photo in photos}
+
+        galleries.append({
+            'id':               gid,
+            'name':             name,
+            'description':      desc,
+            'source_directory': str(d),
+            'photos':           photos,
+            'notes':            notes,
+        })
+
+        # Default slideshow pick: first photo in the gallery
+        slideshow_photos.append({
+            'gallery_id':  gid,
+            'photo_file':  photos[0],
+        })
+
+        print(f"  Added gallery '{name}' — {len(photos)} photo(s).")
+
+    if not galleries:
+        print("\n  No galleries found. Nothing written.")
+        return
+
+    year = str(date.today().year)
+
+    config: Dict[str, Any] = {
+        'site_info': {
+            'title':             "Photographs by J. Cooper Rose",
+            'subtitle':          "A Photographic Journey",
+            'photographer_name': "J. Cooper Rose",
+            'overview':          "Welcome to my photographic collection.",
+            'date_published':    date.today().strftime("%B %Y"),
+            'copyright_year':    year,
+        },
+        'output_directory':         str(user_dir.parent / 'website'),
+        'support_files_directory':  str(user_dir / 'support_files'),
+        'thumbnail_size':           [300, 300],
+        'slideshow_config': {
+            'interval_seconds': 5,
+            'show_captions':    True,
+        },
+        'galleries':        galleries,
+        'slideshow_photos': slideshow_photos,
+    }
+
+    output_path = user_dir / DEFAULT_CONFIG_FILE
+    write_config(config, str(output_path))
+
+    print(f"\n{'=' * 60}")
+    print(f"  Form file written: {output_path}")
+    print(f"{'=' * 60}")
+    print(f"  Galleries : {len(galleries)}")
+    total = sum(len(g['photos']) for g in galleries)
+    print(f"  Photos    : {total}")
+    print()
+    print("  Edit photo_config.json in your user_files folder:")
+    print("    - Fill in site_info fields (title, overview, etc.)")
+    print("    - Add note text for any photo (replace the \"\" entries)")
+    print("    - Reorder photos lists to set index page sequence")
+    print("    - Reorder slideshow_photos to set slideshow sequence")
+    print("    - Change slideshow photo_file to pick a different photo")
+    print()
+    print("  Then generate your website:")
+    print(f"    python3 photos_exposition.py {output_path}")
+    print()
+
+
 def print_summary(config: Dict[str, Any], output_file: str):
     print(f"\n{'=' * 60}")
     print(f"  Configuration saved: {output_file}")
@@ -270,13 +370,18 @@ def main():
     )
     parser.add_argument(
         '--user-dir', '-u',
-        help='Path to your user gallery directory (skips the prompt)',
+        help='Path to your user_files directory (skips the prompt)',
         default=None
     )
     parser.add_argument(
         '--output', '-o',
-        help=f'Config file to write (default: {DEFAULT_CONFIG_FILE})',
+        help=f'Config file to write in wizard mode (default: {DEFAULT_CONFIG_FILE})',
         default=DEFAULT_CONFIG_FILE
+    )
+    parser.add_argument(
+        '--form', '-f',
+        help='Generate a pre-filled photo_config.json into user_files (no prompts)',
+        action='store_true'
     )
     args = parser.parse_args()
 
@@ -285,22 +390,28 @@ def main():
     print("║       Photos at an Exposition — Config Generator        ║")
     print("╚══════════════════════════════════════════════════════════╝")
 
-    # ── Step 1: user directory
+    # ── Resolve user directory (shared by both modes)
     if args.user_dir:
-        user_dir = Path(args.user_dir)
+        user_dir = Path(args.user_dir).expanduser()
     else:
         print(f"\n{SEP}")
         print("  USER DIRECTORY")
         print(SEP)
         print("  This is the folder where your gallery subfolders live.")
-        raw = ask("Path to your gallery directory")
+        raw = ask("Path to your user_files directory")
         user_dir = Path(raw).expanduser()
 
     if not user_dir.exists():
         print(f"\n  ERROR: Directory not found: {user_dir}")
         sys.exit(1)
 
-    # ── Steps 2-6
+    # ── Form mode: scan and write, no questions asked
+    if args.form:
+        print(f"\n  MODE: Generate form file into {user_dir}")
+        generate_form(user_dir)
+        return
+
+    # ── Wizard mode (original interactive flow)
     site_info  = collect_site_info()
     dirs       = collect_directories(user_dir)
     galleries  = collect_galleries(user_dir)
@@ -323,9 +434,10 @@ def main():
         'slideshow_photos':         slideshow,
     }
 
-    # ── Write and summarise
-    write_config(config, args.output)
-    print_summary(config, args.output)
+    # ── Write to user_files; wizard --output is relative to user_files
+    output_path = str(user_dir / args.output) if not Path(args.output).is_absolute() else args.output
+    write_config(config, output_path)
+    print_summary(config, output_path)
 
 
 if __name__ == '__main__':
