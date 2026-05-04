@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rose Family Photos</title>
+<style>
+/* ── reset & base ─────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:        #0a0a0f;
+  --surface:   #14141e;
+  --panel:     #1c1c2a;
+  --border:    #2e2e44;
+  --accent:    #c9a84c;
+  --accent2:   #8b6914;
+  --text:      #e8e0d0;
+  --muted:     #7a7090;
+  --radius:    6px;
+  --trans:     .3s ease;
+}
+html, body { height: 100%; background: var(--bg); color: var(--text);
+              font-family: 'Georgia', 'Times New Roman', serif; overflow: hidden; }
+
+/* ── layout ───────────────────────────────────────── */
+#app { display: flex; height: 100vh; width: 100vw; }
+
+/* sidebar */
+#sidebar {
+  width: 260px; min-width: 200px; max-width: 340px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  transition: transform var(--trans);
+  z-index: 10;
+  resize: horizontal; overflow: auto;
+}
+#sidebar-head {
+  padding: 18px 16px 12px;
+  border-bottom: 1px solid var(--border);
+}
+#sidebar-head h1 {
+  font-size: .75rem; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 6px;
+}
+#sidebar-head h2 {
+  font-size: 1.05rem; font-weight: normal; color: var(--text); line-height: 1.3;
+}
+#gallery-list {
+  flex: 1; overflow-y: auto; padding: 8px 0;
+}
+#gallery-list::-webkit-scrollbar { width: 4px; }
+#gallery-list::-webkit-scrollbar-track { background: transparent; }
+#gallery-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.gal-item {
+  padding: 9px 16px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: background var(--trans), border-color var(--trans);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.gal-item:hover { background: var(--panel); }
+.gal-item.active { border-left-color: var(--accent); background: var(--panel); }
+.gal-item .gal-label { font-size: .88rem; line-height: 1.3; }
+.gal-item .gal-count { font-size: .72rem; color: var(--muted);
+                        background: var(--bg); border-radius: 10px;
+                        padding: 1px 6px; margin-left: 8px; white-space: nowrap; }
+
+#sidebar-foot {
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  font-size: .72rem; color: var(--muted); text-align: center;
+}
+
+/* main stage */
+#stage {
+  flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden;
+}
+
+/* image area */
+#img-wrap {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden; background: #000;
+}
+#main-img {
+  max-width: 100%; max-height: 100%;
+  object-fit: contain;
+  transition: opacity .35s ease;
+  user-select: none;
+}
+#main-img.fade { opacity: 0; }
+
+/* side arrows */
+.arrow-btn {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 52px; height: 52px;
+  background: rgba(0,0,0,.55);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text); font-size: 1.4rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background var(--trans), opacity var(--trans);
+  opacity: 0;
+  z-index: 5;
+}
+#img-wrap:hover .arrow-btn { opacity: 1; }
+.arrow-btn:hover { background: rgba(201,168,76,.25); }
+#btn-prev { left: 14px; }
+#btn-next { right: 14px; }
+
+/* thumbnail strip */
+#thumb-strip {
+  height: 86px; min-height: 86px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center;
+  overflow-x: auto; overflow-y: hidden;
+  gap: 4px; padding: 6px 10px;
+  scroll-behavior: smooth;
+}
+#thumb-strip::-webkit-scrollbar { height: 4px; }
+#thumb-strip::-webkit-scrollbar-track { background: transparent; }
+#thumb-strip::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.thumb {
+  flex-shrink: 0;
+  width: 68px; height: 68px;
+  object-fit: cover;
+  border: 2px solid transparent;
+  border-radius: 3px;
+  cursor: pointer;
+  opacity: .55;
+  transition: opacity var(--trans), border-color var(--trans), transform var(--trans);
+}
+.thumb:hover { opacity: .85; transform: scale(1.05); }
+.thumb.active { border-color: var(--accent); opacity: 1; }
+
+/* info bar */
+#info-bar {
+  height: 36px; min-height: 36px;
+  background: var(--panel);
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 16px; gap: 14px;
+  font-size: .78rem; color: var(--muted);
+}
+#info-bar .info-gallery { color: var(--accent); font-style: italic; }
+#info-bar .info-file    { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#info-bar .info-pos     { white-space: nowrap; }
+
+/* controls bar */
+#ctrl-bar {
+  height: 42px; min-height: 42px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; padding: 0 12px;
+}
+.ctrl-btn {
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text); border-radius: var(--radius);
+  padding: 4px 12px; font-size: .78rem; cursor: pointer;
+  transition: background var(--trans), border-color var(--trans);
+  font-family: inherit;
+}
+.ctrl-btn:hover { background: var(--panel); border-color: var(--accent); }
+.ctrl-btn.active { background: var(--accent2); border-color: var(--accent); color: #fff; }
+
+#speed-label { font-size: .72rem; color: var(--muted); }
+#speed-sel {
+  background: var(--panel); border: 1px solid var(--border);
+  color: var(--text); border-radius: var(--radius);
+  padding: 3px 6px; font-size: .78rem; cursor: pointer;
+  font-family: inherit;
+}
+
+/* fullscreen overlay */
+#fs-overlay {
+  display: none; position: fixed; inset: 0;
+  background: #000;
+  z-index: 100; align-items: center; justify-content: center;
+}
+#fs-overlay.visible { display: flex; }
+#fs-img {
+  max-width: calc(100vw - 160px);
+  max-height: calc(100vh - 60px);
+  object-fit: contain;
+  transition: opacity .25s;
+  border: 4px solid rgba(255,215,0,.75);
+  border-radius: 4px;
+  box-shadow: 0 0 24px rgba(255,215,0,.35);
+}
+#fs-close {
+  position: fixed; top: 16px; right: 20px;
+  background: rgba(0,0,0,.6); border: 1px solid var(--border);
+  color: var(--text); font-size: 1.4rem; width: 38px; height: 38px;
+  border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  z-index: 102;
+}
+.fs-arrow {
+  position: fixed; top: 50%; transform: translateY(-50%);
+  width: 64px; height: 64px;
+  background: #2c3e50;
+  border: 2px solid #FFD700;
+  border-radius: 50%;
+  color: #fff; font-size: 2.2rem; font-weight: bold;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background .2s, box-shadow .2s, transform .15s;
+  opacity: .92; z-index: 101;
+  box-shadow: 0 0 14px rgba(44,62,80,.7);
+  user-select: none;
+}
+.fs-arrow:hover {
+  background: #1a252f;
+  box-shadow: 0 0 22px rgba(255,215,0,.55);
+  transform: translateY(-50%) scale(1.1);
+}
+#fs-prev { left: 18px; }
+#fs-next { right: 18px; }
+
+/* fullscreen auto-play bar */
+#fs-ctrl {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(44,62,80,.88);
+  border-top: 2px solid #3498db;
+  display: flex; align-items: center; justify-content: center;
+  gap: 12px; padding: 10px 16px;
+  z-index: 102;
+  backdrop-filter: blur(6px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+#fs-ctrl.hidden {
+  opacity: 0;
+  transform: translateY(100%);
+  pointer-events: none;
+}
+.fs-ctrl-btn {
+  background: #3498db; border: none; color: #fff;
+  border-radius: 5px; padding: 6px 16px;
+  font-size: .82rem; cursor: pointer; font-family: inherit;
+  transition: background .2s;
+}
+.fs-ctrl-btn:hover  { background: #2980b9; }
+.fs-ctrl-btn.active { background: #FFD700; color: #2c3e50; font-weight: bold; }
+#fs-speed {
+  background: #34495e; border: 1px solid #3498db;
+  color: #fff; border-radius: 4px;
+  padding: 4px 8px; font-size: .8rem; font-family: inherit; cursor: pointer;
+}
+#fs-pos {
+  color: #ecf0f1; font-size: .8rem; min-width: 70px; text-align: center;
+}
+
+/* hide scrollbar on body */
+body { overflow: hidden; }
+
+/* responsive: hide sidebar toggle on mobile */
+#toggle-sidebar {
+  display: none;
+  position: fixed; top: 10px; left: 10px; z-index: 20;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); width: 34px; height: 34px; border-radius: 4px;
+  cursor: pointer; align-items: center; justify-content: center; font-size: 1.1rem;
+}
+@media (max-width: 640px) {
+  #toggle-sidebar { display: flex; }
+  #sidebar { position: fixed; left: 0; top: 0; height: 100%; transform: translateX(-100%); }
+  #sidebar.open { transform: translateX(0); }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ── sidebar ── -->
+  <nav id="sidebar">
+    <div id="sidebar-head">
+      <h1>Photo Archive</h1>
+      <h2 id="show-title">Rose Family Photos</h2>
+    </div>
+    <div id="gallery-list">
+      <!-- populated by JS -->
+    </div>
+    <div id="sidebar-foot">
+      149 photos · 8 galleries<br>
+      2026-05-04 13:29
+    </div>
+  </nav>
+
+  <!-- ── main stage ── -->
+  <main id="stage">
+
+    <div id="img-wrap">
+      <img id="main-img" src="" alt="" draggable="false">
+      <button class="arrow-btn" id="btn-prev" title="Previous (←)">&#8249;</button>
+      <button class="arrow-btn" id="btn-next" title="Next (→)">&#8250;</button>
+    </div>
+
+    <div id="thumb-strip">
+      <!-- populated by JS -->
+    </div>
+
+    <div id="info-bar">
+      <span class="info-gallery" id="info-gallery"></span>
+      <span class="info-file"    id="info-file"></span>
+      <span class="info-pos"     id="info-pos"></span>
+    </div>
+
+    <div id="ctrl-bar">
+      <button class="ctrl-btn" id="btn-first"  title="First image">&#8676;</button>
+      <button class="ctrl-btn" id="btn-play"   title="Play/Pause slideshow">&#9654; Play</button>
+      <button class="ctrl-btn" id="btn-last"   title="Last image">&#8677;</button>
+      <span id="speed-label">Delay:</span>
+      <select id="speed-sel">
+        <option value="2000">2 s</option>
+        <option value="4000" selected>4 s</option>
+        <option value="6000">6 s</option>
+        <option value="10000">10 s</option>
+        <option value="15000">15 s</option>
+      </select>
+      <button class="ctrl-btn" id="btn-shuffle" title="Shuffle gallery">&#8654; Shuffle</button>
+      <button class="ctrl-btn" id="btn-fs"      title="Fullscreen (F)">&#x26F6; Full</button>
+    </div>
+
+  </main>
+</div>
+
+<!-- fullscreen overlay -->
+<div id="fs-overlay">
+  <button id="fs-close" title="Close (Esc)">&#x2715;</button>
+  <button class="fs-arrow" id="fs-prev" title="Previous (←)">&#8249;</button>
+  <img id="fs-img" src="" alt="">
+  <button class="fs-arrow" id="fs-next" title="Next (→)">&#8250;</button>
+  <div id="fs-ctrl">
+    <button class="fs-ctrl-btn" id="fs-play">&#9654; Play</button>
+    <span style="color:#bdc3c7;font-size:.8rem;">Delay:</span>
+    <select id="fs-speed">
+      <option value="2000">2 s</option>
+      <option value="4000" selected>4 s</option>
+      <option value="6000">6 s</option>
+      <option value="10000">10 s</option>
+      <option value="15000">15 s</option>
+    </select>
+    <span id="fs-pos"></span>
+  </div>
+</div>
+
+<button id="toggle-sidebar" title="Toggle sidebar">&#9776;</button>
+
+<script>
+/* ── data ─────────────────────────────────────────────────────────────────── */
+const DATA = {"title": "Rose Family Photos", "galleries": [{"label": "Colonnade", "folder": "colonnade", "images": ["colonnade/Bedroom.jpg", "colonnade/Dining_Area.jpg", "colonnade/Front_Hall.jpg", "colonnade/Front_Yard.jpg", "colonnade/Garage.jpg", "colonnade/Hidden_Bathroom.jpg", "colonnade/House_from_Golf_Course.jpg", "colonnade/Kitchen.jpg", "colonnade/Living_Room.jpg", "colonnade/Master_Bath.jpg", "colonnade/Master_Bathroom.jpg", "colonnade/Music_Center.jpg", "colonnade/Office.jpg", "colonnade/Office_Bathroom.jpg", "colonnade/Plaque.jpg", "colonnade/Quan_Yin.jpg", "colonnade/Second_Bedroom.jpg", "colonnade/South_Side.jpg", "colonnade/Third_Bedroom.jpg"]}, {"label": "Gardens", "folder": "gardens", "images": ["gardens/Berries.jpg", "gardens/Black_Butterfly.jpg", "gardens/Blackeyed_Susans_1.jpg", "gardens/Blackeyed_Susans_2.jpg", "gardens/Blue_Iris.jpg", "gardens/Bough_of_Pine.jpg", "gardens/Butterfly.jpg", "gardens/Cherry_Blooms_Pink.jpg", "gardens/Dogwoods.jpg", "gardens/Dragonfly.jpg", "gardens/Fall_Monet_Bridge.jpg", "gardens/Fluffy_Grass.jpg", "gardens/Flying_Dogwood.jpg", "gardens/Garden_Ornament.jpg", "gardens/Garden_Pride.jpg", "gardens/Gardens_Fountain.jpg", "gardens/Gibbs_Bench.jpg", "gardens/Gibbs_Path.jpg", "gardens/Golden_Girl.jpg", "gardens/Golden_Girl2.jpg", "gardens/Holly_Seeds.jpg", "gardens/Hollyberries.jpg", "gardens/Home_Sweet_Home.jpg", "gardens/Leaves.jpg", "gardens/LVE_Autumn_from_Pond.jpg", "gardens/LVE_Bridge.jpg", "gardens/LVE_Gardens_Fountain2.jpg", "gardens/LVE_Waterfalls.jpg", "gardens/LVE_Waterfalls_2.jpg", "gardens/Rain_on_the_Lily_Pond.jpg", "gardens/Refections.jpg", "gardens/Vine.jpg"]}, {"label": "Heirlooms", "folder": "heirlooms", "images": ["heirlooms/Bastet.jpg", "heirlooms/Copper_Ant_Hole.jpg", "heirlooms/Gift.jpg", "heirlooms/Globe.jpg", "heirlooms/Lace_Iron.jpg", "heirlooms/Lunch_Box.jpg", "heirlooms/Quan_Yin2.jpg", "heirlooms/Viewing_Rock.jpg", "heirlooms/Whistler.jpg"]}, {"label": "Kings Mountain", "folder": "kings_mountain", "images": ["kings_mountain/Blacksmith.jpg", "kings_mountain/Cat_and_Barn_Door.jpg", "kings_mountain/Cotton_Field.jpg", "kings_mountain/Dyer.jpeg", "kings_mountain/Dyer.jpg", "kings_mountain/Old_Barn.jpg", "kings_mountain/Rangers_Office.jpg"]}, {"label": "Miscellaneous", "folder": "miscellaneous", "images": ["miscellaneous/1929_Essex.jpg", "miscellaneous/Hillside-2.jpg", "miscellaneous/Hillside-3.jpg", "miscellaneous/I_think.jpg", "miscellaneous/Pogo.jpg", "miscellaneous/RFW_Horse_and_Rider.jpg", "miscellaneous/RFW_Pitcher.jpg", "miscellaneous/Steam_Show.jpg"]}, {"label": "People", "folder": "people", "images": ["people/Ancestor_and_Descendants.jpg", "people/Bob_Westervelt_1.jpg", "people/Bob_Westervelt_2.jpg", "people/Collecting_Cattails.jpg", "people/Coop_and_Jo_China.jpg", "people/David_Cox.jpg", "people/Doug_in_Vermont.jpg", "people/Einstein_and_Me.jpg", "people/Ian01.jpg", "people/Ian4.jpg", "people/Ian_3 copy.jpg", "people/Ian_3.jpg", "people/Ian_and_Bev.jpg", "people/Ian_and_Coop.jpg", "people/Janet.jpg", "people/Jo_and_Coop_Seattle.jpg", "people/Kathy_and_Tuck.jpg", "people/Self_Portrait.jpg", "people/Square_Dancers.jpg", "people/Stanley.jpg", "people/The_Kids.jpg", "people/Three_Guys.jpg", "people/Tracy.jpg", "people/Tracy_and_Coop.jpg", "people/Tracy_and_Jo.jpg", "people/Walt_and_Nina.jpg"]}, {"label": "Pets", "folder": "pets", "images": ["pets/Koko-Puff.jpg", "pets/Koko_and_the_Game.jpg", "pets/Moxie.jpg", "pets/Neko.jpg", "pets/Sam_and_Jo.jpg", "pets/Shinyuu.jpg", "pets/Shinyuu2.jpg", "pets/Shinyuu3.jpg"]}, {"label": "Travel", "folder": "travel", "images": ["travel/4_Horseshoe_Lane.png", "travel/Anna_Ruby_Falls.jpg", "travel/Anna_Ruby_Stream.jpg", "travel/Bazaar.jpg", "travel/Bergen.jpg", "travel/Chinese_Garden.jpg", "travel/Christ_Black_and_White.jpg", "travel/Christ_Colored.jpg", "travel/Civility.jpg", "travel/Copper_River.jpg", "travel/Current_Agora.jpg", "travel/Erosion.jpg", "travel/Guilin_River.jpg", "travel/Hillside.jpg", "travel/Hillside2.jpg", "travel/Hillside_3.jpg", "travel/Iceland.jpg", "travel/Iceland_Shore.jpg", "travel/Japanese_Bowl.jpg", "travel/Lighthouse.jpg", "travel/Little_waterfalls.jpeg", "travel/Mt_Fuji.jpg", "travel/Multnomah_Falls.jpeg", "travel/Norway.jpg", "travel/Painted_Cow_and_Jo.jpg", "travel/Peruian_Door.jpg", "travel/Peruian_Robot.jpg", "travel/Portland_Lighthouse.jpg", "travel/Quan_Yin.jpg", "travel/Quan_Yin2.jpg", "travel/Rest_and_Be_Thankful.jpg", "travel/Room_with_a_View.jpg", "travel/Schooner.JPG", "travel/Sempervirens_Falls2.jpg", "travel/The_Agora.jpg", "travel/Tocola_Falls.jpg", "travel/Totem_Bear.jpg", "travel/UGA_Flower.jpg", "travel/Vermont_Road_1.jpg", "travel/Vermont_Road_2.jpg"]}]};
+
+/* ── state ────────────────────────────────────────────────────────────────── */
+let galIdx   = 0;   // current gallery index
+let imgIdx   = 0;   // current image index within gallery
+let playing  = false;
+let timer    = null;
+let fsPlaying = false;
+let fsTimer   = null;
+let fsOpen   = false;
+
+/* ── DOM refs ─────────────────────────────────────────────────────────────── */
+const $ = id => document.getElementById(id);
+const galList   = $("gallery-list");
+const mainImg   = $("main-img");
+const thumbStrip= $("thumb-strip");
+const infoGal   = $("info-gallery");
+const infoFile  = $("info-file");
+const infoPos   = $("info-pos");
+const btnPlay   = $("btn-play");
+const speedSel  = $("speed-sel");
+const fsOverlay = $("fs-overlay");
+const fsImg     = $("fs-img");
+const sidebar   = $("sidebar");
+
+/* ── build sidebar ────────────────────────────────────────────────────────── */
+function buildSidebar() {
+  galList.innerHTML = "";
+  DATA.galleries.forEach((g, i) => {
+    const div = document.createElement("div");
+    div.className = "gal-item" + (i === galIdx ? " active" : "");
+    div.dataset.idx = i;
+    div.innerHTML = `<span class="gal-label">${g.label}</span>
+                     <span class="gal-count">${g.images.length}</span>`;
+    div.addEventListener("click", () => switchGallery(i));
+    galList.appendChild(div);
+  });
+}
+
+/* ── build thumbnail strip ────────────────────────────────────────────────── */
+function buildThumbs() {
+  thumbStrip.innerHTML = "";
+  const gal = DATA.galleries[galIdx];
+  gal.images.forEach((src, i) => {
+    const img = document.createElement("img");
+    img.className = "thumb" + (i === imgIdx ? " active" : "");
+    img.src = resolveImg(src);
+    img.alt = src;
+    img.loading = "lazy";
+    img.addEventListener("click", () => goTo(i));
+    thumbStrip.appendChild(img);
+  });
+}
+
+/* ── resolve image path ───────────────────────────────────────────────────── */
+function resolveImg(relPath) {
+  // When opened from media_root we need to reference siblings
+  // The HTML lives one level up from media_root by default;
+  // adjust MEDIA_PREFIX if you move slideshow.html elsewhere.
+  return MEDIA_PREFIX + relPath;
+}
+
+const MEDIA_PREFIX = "../../../../users/jamesrose/project_gallery/website/photos/";
+
+/* ── display an image ─────────────────────────────────────────────────────── */
+function showImage(idx, animate=true) {
+  const gal = DATA.galleries[galIdx];
+  if (!gal) return;
+  idx = ((idx % gal.images.length) + gal.images.length) % gal.images.length;
+  imgIdx = idx;
+
+  const src = resolveImg(gal.images[imgIdx]);
+  const fname = gal.images[imgIdx].split("/").pop();
+
+  if (animate) {
+    mainImg.classList.add("fade");
+    setTimeout(() => {
+      mainImg.src = src;
+      mainImg.onload = () => mainImg.classList.remove("fade");
+      mainImg.onerror = () => { mainImg.classList.remove("fade"); };
+    }, 180);
+  } else {
+    mainImg.src = src;
+  }
+
+  // fullscreen sync
+  if (fsOpen) {
+    fsImg.src = src;
+    updateFsPos();
+  }
+
+  // update thumbs
+  thumbStrip.querySelectorAll(".thumb").forEach((t, i) => {
+    t.classList.toggle("active", i === imgIdx);
+  });
+  // scroll active thumb into view
+  const activeTh = thumbStrip.children[imgIdx];
+  if (activeTh) activeTh.scrollIntoView({behavior:"smooth", block:"nearest", inline:"center"});
+
+  // info bar
+  infoGal.textContent  = gal.label;
+  infoFile.textContent = fname;
+  infoPos.textContent  = `${imgIdx+1} / ${gal.images.length}`;
+}
+
+/* ── navigation ───────────────────────────────────────────────────────────── */
+function goTo(i)    { showImage(i); }
+function goNext()   { showImage(imgIdx + 1); }
+function goPrev()   { showImage(imgIdx - 1); }
+function goFirst()  { showImage(0); }
+function goLast()   { showImage(DATA.galleries[galIdx].images.length - 1); }
+
+function switchGallery(i) {
+  galIdx = i;
+  imgIdx = 0;
+  buildSidebar();
+  buildThumbs();
+  showImage(0, false);
+  // scroll sidebar item into view
+  const active = galList.querySelector(".gal-item.active");
+  if (active) active.scrollIntoView({behavior:"smooth", block:"nearest"});
+}
+
+/* ── autoplay ─────────────────────────────────────────────────────────────── */
+function startPlay() {
+  playing = true;
+  btnPlay.textContent = "⏸ Pause";
+  btnPlay.classList.add("active");
+  scheduleNext();
+}
+function stopPlay() {
+  playing = false;
+  btnPlay.textContent = "▶ Play";
+  btnPlay.classList.remove("active");
+  clearTimeout(timer);
+}
+function togglePlay() { playing ? stopPlay() : startPlay(); }
+function scheduleNext() {
+  clearTimeout(timer);
+  const delay = parseInt(speedSel.value, 10);
+  timer = setTimeout(() => {
+    if (!playing) return;
+    const gal = DATA.galleries[galIdx];
+    const nextIdx = imgIdx + 1;
+    if (nextIdx >= gal.images.length) {
+      // advance to next gallery
+      const nextGal = (galIdx + 1) % DATA.galleries.length;
+      switchGallery(nextGal);
+    } else {
+      showImage(nextIdx);
+    }
+    scheduleNext();
+  }, delay);
+}
+
+/* ── shuffle current gallery ──────────────────────────────────────────────── */
+function shuffleGallery() {
+  const gal = DATA.galleries[galIdx];
+  for (let i = gal.images.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [gal.images[i], gal.images[j]] = [gal.images[j], gal.images[i]];
+  }
+  buildThumbs();
+  showImage(0);
+}
+
+/* ── fullscreen overlay ───────────────────────────────────────────────────── */
+function updateFsPos() {
+  const gal = DATA.galleries[galIdx];
+  $("fs-pos").textContent = gal ? `${imgIdx+1} / ${gal.images.length}` : "";
+}
+function openFs() {
+  fsOpen = true;
+  fsImg.src = resolveImg(DATA.galleries[galIdx].images[imgIdx]);
+  fsOverlay.classList.add("visible");
+  updateFsPos();
+  showFsCtrl();
+}
+function closeFs() {
+  fsOpen = false;
+  stopFsPlay();
+  fsOverlay.classList.remove("visible");
+}
+function startFsPlay() {
+  fsPlaying = true;
+  $("fs-play").textContent = "⏸ Pause";
+  $("fs-play").classList.add("active");
+  scheduleFsNext();
+}
+function stopFsPlay() {
+  fsPlaying = false;
+  clearTimeout(fsTimer);
+  const btn = $("fs-play");
+  if (btn) { btn.textContent = "▶ Play"; btn.classList.remove("active"); }
+}
+function toggleFsPlay() { fsPlaying ? stopFsPlay() : startFsPlay(); }
+function scheduleFsNext() {
+  clearTimeout(fsTimer);
+  const delay = parseInt($("fs-speed").value, 10);
+  fsTimer = setTimeout(() => {
+    if (!fsPlaying) return;
+    const gal = DATA.galleries[galIdx];
+    if (imgIdx + 1 >= gal.images.length) {
+      const next = (galIdx + 1) % DATA.galleries.length;
+      switchGallery(next);
+    } else {
+      showImage(imgIdx + 1);
+    }
+    scheduleFsNext();
+  }, delay);
+}
+
+/* ── keyboard ─────────────────────────────────────────────────────────────── */
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "SELECT") return;
+  switch (e.key) {
+    case "ArrowRight": case "ArrowDown":  goNext();       break;
+    case "ArrowLeft":  case "ArrowUp":    goPrev();       break;
+    case " ":          togglePlay();  e.preventDefault(); break;
+    case "f": case "F": fsOpen ? closeFs() : openFs();   break;
+    case "Escape":     closeFs();                         break;
+    case "Home":       goFirst();                         break;
+    case "End":        goLast();                          break;
+  }
+});
+
+/* ── mouse click on stage image → fullscreen ─────────────────────────────── */
+mainImg.addEventListener("dblclick", openFs);
+
+/* ── button wiring ────────────────────────────────────────────────────────── */
+$("btn-prev").addEventListener("click", goPrev);
+$("btn-next").addEventListener("click", goNext);
+$("btn-first").addEventListener("click", goFirst);
+$("btn-last").addEventListener("click", goLast);
+$("btn-play").addEventListener("click", togglePlay);
+$("btn-shuffle").addEventListener("click", shuffleGallery);
+$("btn-fs").addEventListener("click", openFs);
+$("fs-close").addEventListener("click", closeFs);
+$("fs-play").addEventListener("click", toggleFsPlay);
+$("fs-prev").addEventListener("click", () => { goPrev(); });
+$("fs-next").addEventListener("click", () => { goNext(); });
+$("toggle-sidebar").addEventListener("click", () => sidebar.classList.toggle("open"));
+
+/* ── touch swipe ──────────────────────────────────────────────────────────── */
+let touchX = null;
+$("img-wrap").addEventListener("touchstart", e => { touchX = e.touches[0].clientX; });
+$("img-wrap").addEventListener("touchend",   e => {
+  if (touchX === null) return;
+  const dx = e.changedTouches[0].clientX - touchX;
+  if (Math.abs(dx) > 40) { dx < 0 ? goNext() : goPrev(); }
+  touchX = null;
+});
+
+/* ── fullscreen control bar auto-hide ─────────────────────────────────────── */
+let fsHideTimer = null;
+function showFsCtrl() {
+  $("fs-ctrl").classList.remove("hidden");
+  clearTimeout(fsHideTimer);
+  fsHideTimer = setTimeout(() => $("fs-ctrl").classList.add("hidden"), 2500);
+}
+fsOverlay.addEventListener("mousemove", showFsCtrl);
+fsOverlay.addEventListener("touchstart", showFsCtrl);
+$("fs-ctrl").addEventListener("mouseenter", () => clearTimeout(fsHideTimer));
+$("fs-ctrl").addEventListener("mouseleave", () => {
+  fsHideTimer = setTimeout(() => $("fs-ctrl").classList.add("hidden"), 1200);
+});
+buildSidebar();
+buildThumbs();
+showImage(0, false);
+</script>
+</body>
+</html>

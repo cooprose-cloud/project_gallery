@@ -1,3 +1,3 @@
 git add .
-git commit -m "Back to Home button at bottom of gallery index pages"
+git commit -m "Formating of the updates to generate_photo_configH.py, photos_exposition and style.css."
 git push origin main
